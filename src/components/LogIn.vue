@@ -94,7 +94,7 @@ export default Vue.extend({
             );
             console.log("sessionStorage");
             var str = window.sessionStorage.getItem("studentInfo");
-            var obj = JSON.parse(str);
+            var obj = JSON.parse(str);  
             console.log(obj);
             this.logInFlag = true;
             this.$store.commit("setLogInFlag", true);
