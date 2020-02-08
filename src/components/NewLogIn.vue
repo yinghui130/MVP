@@ -69,7 +69,7 @@ export default Vue.extend({
     if (this.$route.params.type == "chk") {
       logInUrl = "/api/student/login";
       route = "/examCheck";
-      myTitle = "研究生招生初试成绩复查申请系统";
+      myTitle = "研究生招生初试成绩复核申请系统";
       myName = "考生编号";
       myPwd = "身份证号";
     }
