@@ -52,6 +52,12 @@ export default new Router({
       name: 'newlogin',
       //component: uploadFile
       component: (resolve) => require(['@/components/NewLogIn'], resolve)
-    }
+    },
+    {
+      path: '/examCheck',
+      name: 'examCheck',
+      //component: uploadFile
+      component: (resolve) => require(['@/components/ExamCheck'], resolve)
+    },
   ]
 })
