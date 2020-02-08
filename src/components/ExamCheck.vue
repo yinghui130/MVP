@@ -2,7 +2,7 @@
     <div>
         <fieldset>
             <legend>
-                考生信息
+                考生成绩复核
                 <span style="margin:1px;float:right">
                     <logOff />
                 </span>
@@ -37,7 +37,7 @@
                         </el-col>
                     </el-row>
 
-                    <el-row>
+                    <el-row v-if="editFlag==true">
                         <el-col :span="16">
                             <div>
                                 <el-form-item label="复核科目">
@@ -59,7 +59,7 @@
                             </div>
                         </el-col>
                     </el-row>
-                    <el-row>
+                    <el-row v-if="editFlag==true">
                         <el-col :span="8">
                             <el-form-item
                                 label="手机号"
@@ -69,61 +69,105 @@
                             </el-form-item>
                         </el-col>
                     </el-row>
-                    <div
-                        v-for="(item,index) in formData.stuExamCheckList"
-                        :key="index"
-                    >
-                        <el-row>
-                            <el-col
-                                :span="8"
-                                v-if="index==0"
-                            >
-                                <el-form-item
-                                    :label="item.name+'原始分数'"
-                                    prop="originalScore0"
+                    <div v-if="editFlag==true">
+                        <div
+                            v-for="(item,index) in formData.checkSubjects"
+                            :key="index"
+                        >
+                            <el-row>
+                                <el-col
+                                    :span="8"
+                                    v-if="index==0"
                                 >
-                                    <el-input v-model="formData.originalScore0"></el-input>
-                                </el-form-item>
-                            </el-col>
-                            <el-col
-                                :span="8"
-                                v-if="index==1"
-                            >
-                                <el-form-item
-                                    :label="item.name+'原始分数'"
-                                    prop="originalScore1"
+                                    <el-form-item
+                                        :label="item.name+'原始分数'"
+                                        prop="originalScore0"
+                                    >
+                                        <el-input v-model="formData.originalScore0"></el-input>
+                                    </el-form-item>
+                                </el-col>
+                                <el-col
+                                    :span="8"
+                                    v-if="index==1"
                                 >
-                                    <el-input v-model="formData.originalScore1"></el-input>
-                                </el-form-item>
-                            </el-col>
-                        </el-row>
+                                    <el-form-item
+                                        :label="item.name+'原始分数'"
+                                        prop="originalScore1"
+                                    >
+                                        <el-input v-model="formData.originalScore1"></el-input>
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
+                        </div>
                     </div>
-                    <el-form-item>
+                    <el-form-item v-if="editFlag==true">
                         <el-button
                             type="primary"
                             @click="submitForm('formData')"
                         >提交</el-button>
                     </el-form-item>
+                    <el-alert
+                        title="说明："
+                        :closable="false"
+                        type="error"
+                    >
+                        <p>1.每名考生最多可对两门科目提出成绩复核请求。</p>
+                        <p>2.成绩复核在结束后可再次登录本系统查看复核结果。</p>
+                    </el-alert>
+                    <br />
+                    <el-card class="box-card">
+                        <div
+                            slot="header"
+                            class="clearfix"
+                        >
+                            <span>复核详情</span>
+
+                        </div>
+                        <div class="text item">
+                            <el-table
+                                :data="formData.stuExamCheckList"
+                                style="width: 100%"
+                            >
+                                <el-table-column
+                                    prop="kcmc"
+                                    label="科目名称"
+                                >
+                                </el-table-column>
+                                <el-table-column
+                                    prop="originalResult"
+                                    label="原始分数"
+                                >
+                                </el-table-column>
+                                <el-table-column
+                                    prop="checkResult"
+                                    label="复核结果"
+                                >
+                                </el-table-column>
+                            </el-table>
+                        </div>
+                    </el-card>
                 </el-form>
-                <el-alert
-                    title="说明："
-                    :closable="false"
-                    type="error"
-                >
-                    <p>1.每名考生最多可提出两门科目的成绩复核。</p>
-                    <p>2.成绩复核在结束后可再次登录本系统查看复核结果。</p>
-                </el-alert>
+
             </div>
         </fieldset>
     </div>
 </template>
 <script>
 import Vue from "vue";
+import moment from "moment";
 import logOff from "@/components/LogOff";
 export default Vue.extend({
     name: "examCheck",
     components: { logOff },
     data() {
+        var showFlag = false;
+        var now = new moment().format("YYYY-MM-DD");
+        if (
+            now >= this.$myconfig.checkBeginDate &&
+            now <= this.$myconfig.checkEndDate
+        ) {
+            showFlag = true;
+        }
         var telNoValidate = (rule, value, callback) => {
             var re = /^1\d{10}$/;
             if (re.test(value) === false) {
@@ -141,7 +185,7 @@ export default Vue.extend({
             }
         };
         return {
-            openFlag: true,
+            editFlag: showFlag,
             formData: {
                 telNo: "",
                 studentSubjectInfo: {},
@@ -187,10 +231,18 @@ export default Vue.extend({
         const res = await this.$axios.post(
             "/api/student/getStuExamCheckList/" + student.ksbh
         );
-        //setTimeout(()=>{},1000)
         checkList = await res.data;
-        checkSubList.push({ name: student.zzllmc, code: student.zzllm });
-        checkNameList.push(student.zzllmc);
+        checkList.forEach((x, i) => {
+            checkSubList.push({
+                name: x.kcmc,
+                code: x.kcdm,
+                score: x.originalResult
+            });
+            checkNameList.push(x.kcmc);
+            this.formData.telNo = x.telNo;
+            if (i == 0) this.formData.originalScore0 = x.originalResult;
+            else this.formData.originalScore1 = x.originalResult;
+        });
         console.log("liuyinghui-------------------");
         this.formData.studentSubjectInfo = student;
         this.formData.stuExamCheckList = checkList;
@@ -202,7 +254,7 @@ export default Vue.extend({
             { name: student.ywk1mc, code: student.ywk1m },
             { name: student.ywk2mc, code: student.ywk2m }
         ];
-        console.log(this.formData.subjects);
+        console.log(this.formData);
 
         console.log(this.formData.studentSubjectInfo);
         console.log(res.data);
@@ -225,17 +277,31 @@ export default Vue.extend({
             var list = [];
             labels.forEach(x => {
                 this.formData.subjects.forEach(item => {
+                    var score = "";
+                    this.formData.stuExamCheckList.forEach(c => {
+                        if (c.kcmc == x) {
+                            score = c.originalResult;
+                        }
+                    });
                     if (item.name == x) {
+                        item.score = score;
                         list.push(item);
                     }
                 });
             });
             if (list.length == 0) {
-                this.formData.stuExamCheckList = [];
+                this.formData.checkSubjects = [];
             } else {
-                this.formData.stuExamCheckList = list;
+                this.formData.checkSubjects = list;
+                list.forEach((x, i) => {
+                    if (i == 0) {
+                        this.formData.originalScore0 = x.score;
+                    } else if (i == 1) {
+                        this.formData.originalScore1 = x.score;
+                    }
+                });
             }
-            console.log(this.formData.stuExamCheckList);
+            console.log(this.formData.checkSubjects);
         },
         submitForm(formName) {
             var validFlag = false;
@@ -247,36 +313,30 @@ export default Vue.extend({
                     return false;
                 }
             });
-            var saveList = [];
-            if (
-                this.formData.originalScore0 != "" &&
-                this.formData.originalScore0 != NaN
-            ) {
-                saveList.push({
-                    xm: this.formData.studentSubjectInfo.xm,
-                    zjhm: this.formData.studentSubjectInfo.zjhm,
-                    ksbh: this.formData.studentSubjectInfo.ksbh,
-                    kcmc: this.formData.stuExamCheckList[0].name,
-                    kcdm: this.formData.stuExamCheckList[0].code,
-                    originalResult: this.formData.originalScore0,
-                    telNo: this.formData.telNo
-                });
-            }
-            if (
-                this.formData.originalScore1 != "" &&
-                this.formData.originalScore1 != NaN
-            ) {
-                saveList.push({
-                    xm: this.formData.studentSubjectInfo.xm,
-                    zjhm: this.formData.studentSubjectInfo.zjhm,
-                    ksbh: this.formData.studentSubjectInfo.ksbh,
-                    kcmc: this.formData.stuExamCheckList[1].name,
-                    kcdm: this.formData.stuExamCheckList[1].code,
-                    originalResult: this.formData.originalScore1,
-                    telNo: this.formData.telNo
+            {
+                var saveList = [];
+                this.formData.checkSubjects.forEach((x, index) => {
+                    saveList.push({
+                        zjhm: this.formData.studentSubjectInfo.zjhm,
+                        xm: this.formData.studentSubjectInfo.xm,
+                        ksbh: this.formData.studentSubjectInfo.ksbh,
+                        kcmc: this.formData.checkSubjects[index].name,
+                        kcdm: this.formData.checkSubjects[index].code,
+                        originalResult:
+                            index == 0
+                                ? this.formData.originalScore0
+                                : this.formData.originalScore1,
+                        telNo: this.formData.telNo,
+                        checkResult: "尚未复核"
+                    });
                 });
             }
             if (saveList.length > 0) {
+                this.formData.stuExamCheckList = saveList;
+                if (saveList.length == 1) {
+                    this.formData.originalScore1 = "";
+                }
+
                 this.$axios
                     .post("/api/student/saveStuExamCheckList", saveList)
                     .then(response => {
@@ -285,6 +345,10 @@ export default Vue.extend({
                     .catch(error => {
                         console.log(error);
                     });
+                console.log(this.formData);
+            } else {
+                alert("选择要复核的科目填写原始分数后提交！！");
+                return false;
             }
         }
     }
