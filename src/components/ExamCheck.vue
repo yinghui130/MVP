@@ -103,7 +103,7 @@
                         v-if="editFlag==true"
                     >
                         <p />
-                        <p>成绩复核在结束后可再次登录本系统查看复核结果。</p>
+                        <p>成绩复核结束后可再次登录本系统查看复核结果。</p>
                     </el-alert>
                     <br />
                     <el-card class="box-card">
