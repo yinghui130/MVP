@@ -13,22 +13,25 @@
                     :rules="myRules"
                     ref="formData"
                 >
-                    <el-row>
-                        <el-col :span="8">
+                    <el-row
+                        type="flex"
+                        class="row-bg"
+                    >
+                        <el-col>
                             <div>
                                 <el-form-item label="姓名">
                                     <span>{{formData.studentSubjectInfo.xm}}</span>
                                 </el-form-item>
                             </div>
                         </el-col>
-                        <el-col :span="8">
+                        <el-col>
                             <div>
                                 <el-form-item label="身份证号">
                                     <span>{{formData.studentSubjectInfo.zjhm}}</span>
                                 </el-form-item>
                             </div>
                         </el-col>
-                        <el-col :span="8">
+                        <el-col>
                             <div>
                                 <el-form-item label="考生编号">
                                     <span>{{formData.studentSubjectInfo.ksbh}}</span>
@@ -37,8 +40,12 @@
                         </el-col>
                     </el-row>
 
-                    <el-row v-if="editFlag==true">
-                        <el-col :span="16">
+                    <el-row
+                        v-if="editFlag==true"
+                        type="flex"
+                        class="row-bg"
+                    >
+                        <el-col>
                             <div>
                                 <el-form-item label="复核科目">
                                     <el-checkbox-group
@@ -60,12 +67,16 @@
                         </el-col>
                     </el-row>
                     <el-row v-if="editFlag==true">
-                        <el-col :span="8">
+                        <el-col>
                             <el-form-item
                                 label="手机号"
                                 prop="telNo"
+                                style="width:200px"
                             >
-                                <el-input v-model="formData.telNo"></el-input>
+                                <el-input
+                                    v-model="formData.telNo"
+                                    style="width:240px"
+                                ></el-input>
                             </el-form-item>
                         </el-col>
                     </el-row>
@@ -75,16 +86,17 @@
                             :key="index"
                         >
                             <el-row>
-                                <el-col
-                                    :span="8"
-                                    v-if="item.checkFlag==true"
-                                >
+                                <el-col v-if="item.checkFlag==true">
                                     <el-form-item
                                         :label="item.name+'原始分数'"
                                         :prop="'subjects.'+index+'.score'"
                                         :rules="myRules.score"
+                                        style="width:200px"
                                     >
-                                        <el-input v-model="item.score"></el-input>
+                                        <el-input
+                                            v-model="item.score"
+                                            style="width:240px"
+                                        ></el-input>
                                     </el-form-item>
                                 </el-col>
                             </el-row>
