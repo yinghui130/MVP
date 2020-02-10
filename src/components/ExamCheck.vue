@@ -53,8 +53,10 @@
                                         :min="0"
                                         :max="4"
                                         @change="onchange"
+                                        size="small"
                                     >
                                         <el-checkbox
+                                            border
                                             v-for="subject in formData.subjects"
                                             :label="subject.name"
                                             :key="subject.code"
