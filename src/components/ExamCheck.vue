@@ -13,9 +13,10 @@
                     :rules="myRules"
                     ref="formData"
                 >
+
                     <el-row
                         type="flex"
-                        class="row-bg"
+                        justify="space-around"
                     >
                         <el-col>
                             <div>
@@ -39,11 +40,9 @@
                             </div>
                         </el-col>
                     </el-row>
-
                     <el-row
                         v-if="editFlag==true"
                         type="flex"
-                        class="row-bg"
                     >
                         <el-col>
                             <div>
