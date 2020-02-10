@@ -42,10 +42,10 @@
                             <div>
                                 <el-form-item label="复核科目">
                                     <el-checkbox-group
-                                        v-model="formData.checkSubNameList"
+                                        v-model="formData.checkNameList"
                                         aria-label
                                         :min="0"
-                                        :max="2"
+                                        :max="4"
                                         @change="onchange"
                                     >
                                         <el-checkbox
@@ -71,30 +71,20 @@
                     </el-row>
                     <div v-if="editFlag==true">
                         <div
-                            v-for="(item,index) in formData.checkSubjects"
+                            v-for="(item,index) in formData.subjects"
                             :key="index"
                         >
                             <el-row>
                                 <el-col
                                     :span="8"
-                                    v-if="index==0"
+                                    v-if="item.checkFlag==true"
                                 >
                                     <el-form-item
                                         :label="item.name+'原始分数'"
-                                        prop="originalScore0"
+                                        :prop="'subjects.'+index+'.score'"
+                                        :rules="myRules.score"
                                     >
-                                        <el-input v-model="formData.originalScore0"></el-input>
-                                    </el-form-item>
-                                </el-col>
-                                <el-col
-                                    :span="8"
-                                    v-if="index==1"
-                                >
-                                    <el-form-item
-                                        :label="item.name+'原始分数'"
-                                        prop="originalScore1"
-                                    >
-                                        <el-input v-model="formData.originalScore1"></el-input>
+                                        <el-input v-model="item.score"></el-input>
                                     </el-form-item>
                                 </el-col>
                             </el-row>
@@ -110,10 +100,10 @@
                         title="说明："
                         :closable="false"
                         type="error"
+                        v-if="editFlag==true"
                     >
                         <p />
-                        <p>1.每名考生最多可对两门科目提出成绩复核请求；</p>
-                        <p>2.成绩复核在结束后可再次登录本系统查看复核结果。</p>
+                        <p>成绩复核在结束后可再次登录本系统查看复核结果。</p>
                     </el-alert>
                     <br />
                     <el-card class="box-card">
@@ -179,6 +169,7 @@ export default Vue.extend({
         };
         var scoreValidate = (rule, value, callback) => {
             var re = /^(?:[1-9]\d?|1[0-4]\d|150)$/;
+
             if (re.test(value) === false) {
                 return callback(new Error("填写数字且不能超过150"));
             } else {
@@ -191,11 +182,8 @@ export default Vue.extend({
                 telNo: "",
                 studentSubjectInfo: {},
                 stuExamCheckList: [],
-                checkSubNameList: [],
-                checkSubjects: [],
-                originalScore0: "",
-                originalScore1: "",
-                subjects: []
+                subjects: [],
+                checkNameList: []
             },
             myRules: {
                 telNo: [
@@ -206,103 +194,89 @@ export default Vue.extend({
                     },
                     { validator: telNoValidate, trigger: "blur" }
                 ],
-                originalScore0: [
+                subjects: [
                     { required: true, message: "分数必填", trigger: "change" },
                     { validator: scoreValidate, trigger: "blur" }
                 ],
-                originalScore1: [
+                score: [
                     { required: true, message: "分数必填", trigger: "change" },
                     { validator: scoreValidate, trigger: "blur" }
                 ]
             }
         };
     },
+
     async created() {
         var checkList = [];
         var checkSubList = [];
         var checkNameList = [];
         var str = window.sessionStorage.getItem("studentInfo");
-        //console.log(str);
         var student = null;
         if (str != null) {
             student = JSON.parse(str);
         } else {
             this.$router.push({ path: "/newlogin/chk" });
         }
-        const res = await this.$axios.post(
+        var res = await this.$axios.post(
             "/api/student/getStuExamCheckList/" + student.ksbh
         );
         checkList = await res.data;
+        this.formData.subjects = [
+            {
+                name: student.zzllmc,
+                code: student.zzllm,
+                checkFlag: false,
+                score: ""
+            },
+            {
+                name: student.wgymc,
+                code: student.wgym,
+                checkFlag: false,
+                score: ""
+            },
+            {
+                name: student.ywk1mc,
+                code: student.ywk1m,
+                checkFlag: false,
+                score: ""
+            },
+            {
+                name: student.ywk2mc,
+                code: student.ywk2m,
+                checkFlag: false,
+                score: ""
+            }
+        ];
         checkList.forEach((x, i) => {
-            checkSubList.push({
-                name: x.kcmc,
-                code: x.kcdm,
-                score: x.originalResult
+            this.formData.subjects.forEach(s => {
+                if (x.kcdm == s.code) {
+                    s.score = x.originalResult;
+                    s.checkFlag = true;
+                    this.formData.checkNameList.push(s.name);
+                }
             });
-            checkNameList.push(x.kcmc);
             this.formData.telNo = x.telNo;
-            if (i == 0) this.formData.originalScore0 = x.originalResult;
-            else this.formData.originalScore1 = x.originalResult;
         });
+        //console.log(this.formData.subjects);
         //console.log("liuyinghui-------------------");
         this.formData.studentSubjectInfo = student;
         this.formData.stuExamCheckList = checkList;
-        this.formData.checkSubNameList = checkNameList;
-        this.formData.checkSubjects = checkSubList;
-        this.formData.subjects = [
-            { name: student.zzllmc, code: student.zzllm },
-            { name: student.wgymc, code: student.wgym },
-            { name: student.ywk1mc, code: student.ywk1m },
-            { name: student.ywk2mc, code: student.ywk2m }
-        ];
-        console.log(this.formData);
+        //console.log(this.formData);
 
         //console.log(this.formData.studentSubjectInfo);
         //console.log(res.data);
     },
     methods: {
-        getStuExamCheckList() {
-            return this.$axios.post(
-                "/api/student/getStuExamCheckList/" + student.ksbh
-            );
-        },
-        async getData() {
-            try {
-                let tempData = await getStuExamCheckList();
-                return tempData.data;
-            } catch (err) {
-                //console.log(err);
-            }
-        },
         onchange(labels) {
             var list = [];
-            labels.forEach(x => {
-                this.formData.subjects.forEach(item => {
-                    var score = "";
-                    this.formData.stuExamCheckList.forEach(c => {
-                        if (c.kcmc == x) {
-                            score = c.originalResult;
-                        }
-                    });
+            this.formData.subjects.forEach((item, index) => {
+                this.formData.subjects[index].checkFlag = false;
+                this.formData.checkNameList.forEach(x => {
                     if (item.name == x) {
-                        item.score = score;
-                        list.push(item);
+                        this.formData.subjects[index].checkFlag = true;
                     }
                 });
             });
-            if (list.length == 0) {
-                this.formData.checkSubjects = [];
-            } else {
-                this.formData.checkSubjects = list;
-                list.forEach((x, i) => {
-                    if (i == 0) {
-                        this.formData.originalScore0 = x.score;
-                    } else if (i == 1) {
-                        this.formData.originalScore1 = x.score;
-                    }
-                });
-            }
-            //console.log(this.formData.checkSubjects);
         },
         submitForm(formName) {
             var validFlag = false;
@@ -316,17 +290,14 @@ export default Vue.extend({
             });
             {
                 var saveList = [];
-                this.formData.checkSubjects.forEach((x, index) => {
+                this.formData.subjects.forEach(x => {
                     saveList.push({
                         zjhm: this.formData.studentSubjectInfo.zjhm,
                         xm: this.formData.studentSubjectInfo.xm,
                         ksbh: this.formData.studentSubjectInfo.ksbh,
-                        kcmc: this.formData.checkSubjects[index].name,
-                        kcdm: this.formData.checkSubjects[index].code,
-                        originalResult:
-                            index == 0
-                                ? this.formData.originalScore0
-                                : this.formData.originalScore1,
+                        kcmc: x.name,
+                        kcdm: x.code,
+                        originalResult: x.score,
                         telNo: this.formData.telNo,
                         checkResult: "尚未复核"
                     });
@@ -334,9 +305,6 @@ export default Vue.extend({
             }
             if (saveList.length > 0) {
                 this.formData.stuExamCheckList = saveList;
-                if (saveList.length == 1) {
-                    this.formData.originalScore1 = "";
-                }
 
                 this.$axios
                     .post("/api/student/saveStuExamCheckList", saveList)
