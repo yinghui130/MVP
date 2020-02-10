@@ -111,7 +111,8 @@
                         :closable="false"
                         type="error"
                     >
-                        <p>1.每名考生最多可对两门科目提出成绩复核请求。</p>
+                        <p />
+                        <p>1.每名考生最多可对两门科目提出成绩复核请求；</p>
                         <p>2.成绩复核在结束后可再次登录本系统查看复核结果。</p>
                     </el-alert>
                     <br />
@@ -121,7 +122,6 @@
                             class="clearfix"
                         >
                             <span>复核详情</span>
-
                         </div>
                         <div class="text item">
                             <el-table
@@ -150,6 +150,7 @@
 
             </div>
         </fieldset>
+        <br /><br /><br /><br /><br />
     </div>
 </template>
 <script>
@@ -221,7 +222,7 @@ export default Vue.extend({
         var checkSubList = [];
         var checkNameList = [];
         var str = window.sessionStorage.getItem("studentInfo");
-        console.log(str);
+        //console.log(str);
         var student = null;
         if (str != null) {
             student = JSON.parse(str);
@@ -243,7 +244,7 @@ export default Vue.extend({
             if (i == 0) this.formData.originalScore0 = x.originalResult;
             else this.formData.originalScore1 = x.originalResult;
         });
-        console.log("liuyinghui-------------------");
+        //console.log("liuyinghui-------------------");
         this.formData.studentSubjectInfo = student;
         this.formData.stuExamCheckList = checkList;
         this.formData.checkSubNameList = checkNameList;
@@ -256,8 +257,8 @@ export default Vue.extend({
         ];
         console.log(this.formData);
 
-        console.log(this.formData.studentSubjectInfo);
-        console.log(res.data);
+        //console.log(this.formData.studentSubjectInfo);
+        //console.log(res.data);
     },
     methods: {
         getStuExamCheckList() {
@@ -270,7 +271,7 @@ export default Vue.extend({
                 let tempData = await getStuExamCheckList();
                 return tempData.data;
             } catch (err) {
-                console.log(err);
+                //console.log(err);
             }
         },
         onchange(labels) {
@@ -301,7 +302,7 @@ export default Vue.extend({
                     }
                 });
             }
-            console.log(this.formData.checkSubjects);
+            //console.log(this.formData.checkSubjects);
         },
         submitForm(formName) {
             var validFlag = false;
@@ -309,7 +310,7 @@ export default Vue.extend({
                 if (valid) {
                     validFlag = true;
                 } else {
-                    console.log("error submit!!");
+                    //console.log("error submit!!");
                     return false;
                 }
             });
@@ -343,7 +344,7 @@ export default Vue.extend({
                         alert("信息更新成功！");
                     })
                     .catch(error => {
-                        console.log(error);
+                        //console.log(error);
                     });
                 console.log(this.formData);
             } else {
