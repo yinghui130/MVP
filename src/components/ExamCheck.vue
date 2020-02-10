@@ -97,14 +97,18 @@
                         >提交</el-button>
                     </el-form-item>
                     <el-alert
-                        title="说明："
+                        title="友情提示："
                         :closable="false"
                         type="error"
-                        v-if="editFlag==true"
                     >
                         <p />
-                        <p>1.取消成绩复核申请的方式是反选科目后提交；</p>
-                        <p>2.成绩复核结束后可再次登录本系统查看复核结果。</p>
+                        <span v-if="editFlag==true">
+                            <p>1.取消成绩复核申请的方式是反选科目后提交；</p>
+                            <p>2.成绩复核结束后可再次登录本系统查看复核结果。</p>
+                        </span>
+                        <span v-else>
+                            成绩复核申请已于{{this.$myconfig.checkEndDate}}截止！
+                        </span>
                     </el-alert>
                     <br />
                     <el-card class="box-card">
@@ -153,7 +157,7 @@ export default Vue.extend({
     components: { logOff },
     data() {
         var showFlag = false;
-        var now = new moment().format("YYYY-MM-DD");
+        var now = new moment().format("YYYY-MM-DDTHH:mm:ss");
         if (
             now >= this.$myconfig.checkBeginDate &&
             now <= this.$myconfig.checkEndDate
@@ -169,11 +173,10 @@ export default Vue.extend({
             }
         };
         var scoreValidate = (rule, value, callback) => {
-            var re = /^(?:[1-9]\d?|1[0-4]\d|150)|(?:[1-9]\d?|1[0-4]\d|150)\.(\d{1,2})$/;
+            //var re = /^(?:[1-9]\d?|1[0-4]\d|150)|(?:[1-9]\d?|1[0-4]\d|150)\.(\d{1,2})$/;
+            var re = /^[+]{0,1}(\d+)$/;
             if (re.test(value) === false) {
-                return callback(
-                    new Error("填写数字且不能超过150，且小数部分不能超过两位")
-                );
+                return callback(new Error("填写正整数"));
             } else {
                 return callback();
             }
