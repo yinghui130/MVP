@@ -283,26 +283,22 @@ export default Vue.extend({
             this.$refs[formName].validate(valid => {
                 if (valid) {
                     validFlag = true;
-                } else {
-                    //console.log("error submit!!");
-                    return false;
                 }
             });
-            {
-                var saveList = [];
-                this.formData.subjects.forEach(x => {
-                    saveList.push({
-                        zjhm: this.formData.studentSubjectInfo.zjhm,
-                        xm: this.formData.studentSubjectInfo.xm,
-                        ksbh: this.formData.studentSubjectInfo.ksbh,
-                        kcmc: x.name,
-                        kcdm: x.code,
-                        originalResult: x.score,
-                        telNo: this.formData.telNo,
-                        checkResult: "尚未复核"
-                    });
+            if (validFlag == false) return false;
+            var saveList = [];
+            this.formData.subjects.forEach(x => {
+                saveList.push({
+                    zjhm: this.formData.studentSubjectInfo.zjhm,
+                    xm: this.formData.studentSubjectInfo.xm,
+                    ksbh: this.formData.studentSubjectInfo.ksbh,
+                    kcmc: x.name,
+                    kcdm: x.code,
+                    originalResult: x.score,
+                    telNo: this.formData.telNo,
+                    checkResult: "尚未复核"
                 });
-            }
+            });
             if (saveList.length > 0) {
                 this.formData.stuExamCheckList = saveList;
 
