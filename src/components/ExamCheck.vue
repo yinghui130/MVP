@@ -169,10 +169,11 @@ export default Vue.extend({
             }
         };
         var scoreValidate = (rule, value, callback) => {
-            var re = /^(?:[1-9]\d?|1[0-4]\d|150)$/;
-
+            var re = /^(?:[1-9]\d?|1[0-4]\d|150)|(?:[1-9]\d?|1[0-4]\d|150)\.(\d{1,2})$/;
             if (re.test(value) === false) {
-                return callback(new Error("填写数字且不能超过150"));
+                return callback(
+                    new Error("填写数字且不能超过150，且小数部分不能超过两位")
+                );
             } else {
                 return callback();
             }
