@@ -221,32 +221,51 @@ export default Vue.extend({
             "/api/student/getStuExamCheckList/" + student.ksbh
         );
         checkList = await res.data;
-        this.formData.subjects = [
-            {
+        this.formData.subjects = [];
+        if (
+            student.zzllm != NaN &&
+            student.zzllm.charAt(0) != "-" &&
+            student.zzllmc != "无"
+        )
+            this.formData.subjects.push({
                 name: student.zzllmc,
                 code: student.zzllm,
                 checkFlag: false,
                 score: ""
-            },
-            {
+            });
+        if (
+            student.wgym != NaN &&
+            student.wgym.charAt(0) != "-" &&
+            student.wgymc != "无"
+        )
+            this.formData.subjects.push({
                 name: student.wgymc,
                 code: student.wgym,
                 checkFlag: false,
                 score: ""
-            },
-            {
+            });
+        if (
+            student.ywk1m != NaN &&
+            student.ywk1m.charAt(0) != "-" &&
+            student.ywk1mc != "无"
+        )
+            this.formData.subjects.push({
                 name: student.ywk1mc,
                 code: student.ywk1m,
                 checkFlag: false,
                 score: ""
-            },
-            {
+            });
+        if (
+            student.ywk2m != NaN &&
+            student.ywk2m.charAt(0) != "-" &&
+            student.ywk2mc != "无"
+        )
+            this.formData.subjects.push({
                 name: student.ywk2mc,
                 code: student.ywk2m,
                 checkFlag: false,
                 score: ""
-            }
-        ];
+            });
         checkList.forEach((x, i) => {
             this.formData.subjects.forEach(s => {
                 if (x.kcdm == s.code) {
