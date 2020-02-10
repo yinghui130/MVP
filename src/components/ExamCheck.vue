@@ -163,8 +163,10 @@
 </template>
 <script>
 import Vue from "vue";
+import { Message } from "element-ui";
 import moment from "moment";
 import logOff from "@/components/LogOff";
+
 export default Vue.extend({
     name: "examCheck",
     components: { logOff },
@@ -348,7 +350,11 @@ export default Vue.extend({
                     saveList
                 )
                 .then(response => {
-                    alert("信息更新成功！");
+                    this.$message({
+                        showClose: true,
+                        message: "恭喜你，提交成功！",
+                        type: "success"
+                    });
                 })
                 .catch(error => {
                     console.log(error);
