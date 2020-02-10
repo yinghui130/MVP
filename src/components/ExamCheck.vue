@@ -103,7 +103,8 @@
                         v-if="editFlag==true"
                     >
                         <p />
-                        <p>成绩复核结束后可再次登录本系统查看复核结果。</p>
+                        <p>1.取消成绩复核申请的方式是反选科目后提交；</p>
+                        <p>2.成绩复核结束后可再次登录本系统查看复核结果。</p>
                     </el-alert>
                     <br />
                     <el-card class="box-card">
@@ -320,22 +321,22 @@ export default Vue.extend({
                     });
                 }
             });
-            if (saveList.length > 0) {
-                this.formData.stuExamCheckList = saveList;
 
-                this.$axios
-                    .post("/api/student/saveStuExamCheckList", saveList)
-                    .then(response => {
-                        alert("信息更新成功！");
-                    })
-                    .catch(error => {
-                        //console.log(error);
-                    });
-                console.log(this.formData);
-            } else {
-                alert("选择要复核的科目填写原始分数后提交！！");
-                return false;
-            }
+            this.formData.stuExamCheckList = saveList;
+
+            this.$axios
+                .post(
+                    "/api/student/saveStuExamCheckList/" +
+                        this.formData.studentSubjectInfo.ksbh,
+                    saveList
+                )
+                .then(response => {
+                    alert("信息更新成功！");
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+            //console.log(this.formData);
         }
     }
 });
