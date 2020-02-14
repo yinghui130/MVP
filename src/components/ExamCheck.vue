@@ -120,7 +120,7 @@
                             <p>2.成绩复核结束后可再次登录本系统查看复核结果。</p>
                         </span>
                         <span v-else>
-                            成绩复核申请已于{{this.$myconfig.checkEndDate}}截止！
+                            {{msg}}
                         </span>
                     </el-alert>
                     <br />
@@ -172,12 +172,25 @@ export default Vue.extend({
     components: { logOff },
     data() {
         var showFlag = false;
+        var showMsg = "";
         var now = new moment().format("YYYY-MM-DDTHH:mm:ss");
         if (
             now >= this.$myconfig.checkBeginDate &&
             now <= this.$myconfig.checkEndDate
         ) {
             showFlag = true;
+        }
+        if (now < this.$myconfig.checkBeginDate) {
+            showMsg =
+                " 成绩复核申请将于" +
+                this.$myconfig.checkBeginDate.replace(/T/, " ") +
+                "开通。";
+        }
+        if (now > this.$myconfig.checkEndDate) {
+            showMsg =
+                "成绩复核申请已于" +
+                this.$myconfig.checkEndDate.replace(/T/, " ") +
+                "截止！";
         }
         var telNoValidate = (rule, value, callback) => {
             var re = /^1\d{10}$/;
@@ -198,6 +211,7 @@ export default Vue.extend({
         };
         return {
             editFlag: showFlag,
+            msg: showMsg,
             formData: {
                 telNo: "",
                 studentSubjectInfo: {},
