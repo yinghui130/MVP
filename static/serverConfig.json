@@ -3,7 +3,7 @@
     "api_url": "http://127.0.0.1:9091/",
     "openFlag": true,
     "openFlag说明": "用于控制修改录取通知书页面的打开与关闭，打开用true，关闭用false",
-    "checkBeginDate": "2020-02-01T10:00:00",
-    "checkEndDate": "2020-02-10T23:00:00",
+    "checkBeginDate": "2020-02-11T10:00:00",
+    "checkEndDate": "2020-02-22T23:00:00",
     "checkDate说明": "checkBeginDate和checkEndDate用于控制考生提交成绩复核的日期，只有在这个两个时间段才能提交。格式yyyy-MM-ddTHH:mm:ss"
 }

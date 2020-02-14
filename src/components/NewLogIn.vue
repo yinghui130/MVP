@@ -112,7 +112,6 @@ export default Vue.extend({
         var myTitle = "研究生招生成绩查询打印系统";
         var myName = "考生姓名";
         var myPwd = "身份证号";
-        var type = "";
         if (this.$route.params.type == "stu") {
             logInUrl = "/api/student/login";
             route = "/student";

@@ -12,6 +12,8 @@
                     :model="formData"
                     :rules="myRules"
                     ref="formData"
+                    label-position="top"
+                    label-width="80px"
                 >
 
                     <el-row
@@ -72,11 +74,10 @@
                             <el-form-item
                                 label="手机号"
                                 prop="telNo"
-                                style="width:200px"
                             >
                                 <el-input
                                     v-model="formData.telNo"
-                                    style="width:240px"
+                                    style="width:280px"
                                 ></el-input>
                             </el-form-item>
                         </el-col>
@@ -92,11 +93,10 @@
                                         :label="item.name+'原始分数'"
                                         :prop="'subjects.'+index+'.score'"
                                         :rules="myRules.score"
-                                        style="width:200px"
                                     >
                                         <el-input
                                             v-model="item.score"
-                                            style="width:240px"
+                                            style="width:280px"
                                         ></el-input>
                                     </el-form-item>
                                 </el-col>
@@ -184,7 +184,9 @@ export default Vue.extend({
             showMsg =
                 " 成绩复核申请将于" +
                 this.$myconfig.checkBeginDate.replace(/T/, " ") +
-                "开通。";
+                "开通，于" +
+                this.$myconfig.checkEndDate.replace(/T/, " ") +
+                "截止！";
         }
         if (now > this.$myconfig.checkEndDate) {
             showMsg =
