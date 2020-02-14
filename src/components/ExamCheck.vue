@@ -15,31 +15,24 @@
                     label-position="top"
                     label-width="80px"
                 >
-
                     <el-row
                         type="flex"
                         justify="space-around"
                     >
                         <el-col>
-                            <div>
-                                <el-form-item label="姓名">
-                                    <span>{{formData.studentSubjectInfo.xm}}</span>
-                                </el-form-item>
-                            </div>
+                            <el-form-item label="姓名">
+                                <span>{{formData.studentSubjectInfo.xm}}</span>
+                            </el-form-item>
                         </el-col>
                         <el-col>
-                            <div>
-                                <el-form-item label="身份证号">
-                                    <span>{{formData.studentSubjectInfo.zjhm}}</span>
-                                </el-form-item>
-                            </div>
+                            <el-form-item label="身份证号">
+                                <span>{{formData.studentSubjectInfo.zjhm}}</span>
+                            </el-form-item>
                         </el-col>
                         <el-col>
-                            <div>
-                                <el-form-item label="考生编号">
-                                    <span>{{formData.studentSubjectInfo.ksbh}}</span>
-                                </el-form-item>
-                            </div>
+                            <el-form-item label="考生编号">
+                                <span>{{formData.studentSubjectInfo.ksbh}}</span>
+                            </el-form-item>
                         </el-col>
                     </el-row>
                     <el-row
@@ -47,26 +40,24 @@
                         type="flex"
                     >
                         <el-col>
-                            <div>
-                                <el-form-item label="复核科目">
-                                    <el-checkbox-group
-                                        v-model="formData.checkNameList"
-                                        aria-label
-                                        :min="0"
-                                        :max="4"
-                                        @change="onchange"
-                                        size="small"
-                                    >
-                                        <el-checkbox
-                                            border
-                                            v-for="subject in formData.subjects"
-                                            :label="subject.name"
-                                            :key="subject.code"
-                                            :value="subject.code"
-                                        >{{subject.name}}</el-checkbox>
-                                    </el-checkbox-group>
-                                </el-form-item>
-                            </div>
+                            <el-form-item label="复核科目">
+                                <el-checkbox-group
+                                    v-model="formData.checkNameList"
+                                    aria-label
+                                    :min="0"
+                                    :max="4"
+                                    @change="onchange"
+                                    size="small"
+                                >
+                                    <el-checkbox
+                                        border
+                                        v-for="subject in formData.subjects"
+                                        :label="subject.name"
+                                        :key="subject.code"
+                                        :value="subject.code"
+                                    >{{subject.name}}</el-checkbox>
+                                </el-checkbox-group>
+                            </el-form-item>
                         </el-col>
                     </el-row>
                     <el-row v-if="editFlag==true">
