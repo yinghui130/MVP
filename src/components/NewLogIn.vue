@@ -112,6 +112,7 @@ export default Vue.extend({
         var myTitle = "研究生招生成绩查询打印系统";
         var myName = "考生姓名";
         var myPwd = "身份证号";
+        var type = "";
         if (this.$route.params.type == "stu") {
             logInUrl = "/api/student/login";
             route = "/student";
@@ -147,8 +148,8 @@ export default Vue.extend({
     },
     methods: {
         logIn: function() {
-            //console.log(this.url);
-            var type = "";
+            // console.log(this);
+            var type = "/stu";
             if (this.$route.params.type == "chk") {
                 type = "/chk";
             }
@@ -163,7 +164,11 @@ export default Vue.extend({
                 )
                 .then(response => {
                     if (response.data == "") {
-                        this.msg = "姓名或者身份证错误查无此人。";
+                        this.msg =
+                            this.loginName +
+                            "或者" +
+                            this.loginPwd +
+                            "错误查无此人。";
                     } else {
                         window.sessionStorage.setItem(
                             "studentInfo",
