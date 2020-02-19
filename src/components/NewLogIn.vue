@@ -143,6 +143,10 @@ export default Vue.extend({
         var str = window.sessionStorage.getItem("studentInfo");
         if (str != null) {
             this.$router.push({ path: this.jmpRoute });
+        } else {
+            this.logInFlag = false;
+            this.$store.commit("setLogInFlag", false);
+            this.$store.dispatch("setLogInFlag", false);
         }
     },
     methods: {

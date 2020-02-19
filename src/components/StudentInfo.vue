@@ -302,27 +302,12 @@
 
 <script>
 import moment from "moment";
+import { Message } from "element-ui";
 import logOff from "@/components/LogOff";
 export default {
     name: "studentInfo",
     components: { logOff },
-    data() {
-        var postCodeValidate = (rule, value, callback) => {
-            var re = /^[0-9][0-9]{5}$/;
-            if (re.test(value) === false) {
-                return callback(new Error("邮政编码必须为6位数字"));
-            } else {
-                return callback();
-            }
-        };
-        var telNo1Validate = (rule, value, callback) => {
-            var re = /^1\d{10}$/;
-            if (re.test(value) === false) {
-                return callback(new Error("手机号必须是以1开头的11位数字"));
-            } else {
-                return callback();
-            }
-        };
+    created() {
         var str = window.sessionStorage.getItem("studentInfo");
         var student = {
             name: "",
@@ -345,13 +330,34 @@ export default {
             student = JSON.parse(str);
             console.log("data()");
             console.log(student);
+            this.studentForm = student;
         } else {
             this.$router.push({ path: "/newlogin/stu" });
         }
+    },
+
+    data() {
+        var postCodeValidate = (rule, value, callback) => {
+            var re = /^[0-9][0-9]{5}$/;
+            if (re.test(value) === false) {
+                return callback(new Error("邮政编码必须为6位数字"));
+            } else {
+                return callback();
+            }
+        };
+        var telNo1Validate = (rule, value, callback) => {
+            var re = /^1\d{10}$/;
+            if (re.test(value) === false) {
+                return callback(new Error("手机号必须是以1开头的11位数字"));
+            } else {
+                return callback();
+            }
+        };
+
         console.log("sudentinfo.vue islogin");
         console.log(this.$store.getters.isLogIn);
         return {
-            studentForm: student,
+            studentForm: null,
             openFlag: this.$myconfig.openFlag,
             logInFlag: this.$store.getters.isLogIn,
             studentRules: {
@@ -409,16 +415,22 @@ export default {
                     return false;
                 }
             });
-            console.log(this.studentForm.updateTime);
-            this.studentForm.updateTime = new moment().format(
-                "YYYY-MM-DD HH:mm:ss"
-            );
-            console.log(this.studentForm.updateTime);
             if (validFlag) {
+                this.studentForm.updateTime = new moment().format(
+                    "YYYY-MM-DD HH:mm:ss"
+                );
                 this.$axios
                     .post("/api/student/update", this.studentForm)
                     .then(response => {
-                        alert("信息更新成功！");
+                        this.$message({
+                            showClose: true,
+                            message: "恭喜你，信息更新成功！",
+                            type: "success"
+                        });
+                        window.sessionStorage.setItem(
+                            "studentInfo",
+                            JSON.stringify(this.studentForm)
+                        );
                     })
                     .catch(error => {
                         console.log(error);
