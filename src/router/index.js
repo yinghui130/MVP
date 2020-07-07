@@ -24,6 +24,12 @@ export default new Router({
     //   component: (resolve) => require(['@/components/cell'], resolve)
     // },
     {
+      path: "/doc",
+      name: 'doc',
+      //component: studentInfo
+      component: (resolve) => require(['@/components/StudentDoc'], resolve)
+    },
+    {
       path: "/student",
       name: 'student',
       //component: studentInfo

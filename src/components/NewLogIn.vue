@@ -124,6 +124,13 @@ export default Vue.extend({
             myName = "考生编号";
             myPwd = "身份证号";
         }
+        if (this.$route.params.type == "doc") {
+            logInUrl = "/api/student/login";
+            route = "/doc";
+            myTitle = "研究生招生调档函下载系统";
+            myName = "考生姓名";
+            myPwd = "身份证号";
+        }
         return {
             appName: myTitle,
             loginPwd: myPwd,
@@ -155,6 +162,9 @@ export default Vue.extend({
             var type = "/stu";
             if (this.$route.params.type == "chk") {
                 type = "/chk";
+            }
+            if (this.$route.params.type == "doc") {
+                type = "/doc";
             }
             this.$axios
                 .post(
@@ -197,7 +207,7 @@ export default Vue.extend({
                     }
                 })
                 .catch(error => {
-                    //console.log(error);
+                    console.log(error);
                 });
         }
     }
